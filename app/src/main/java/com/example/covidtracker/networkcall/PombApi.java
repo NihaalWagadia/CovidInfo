@@ -10,9 +10,9 @@ import retrofit2.http.Headers;
 
 public interface PombApi {
 
-    String BASE_API = "https://pomber.github.io/covid19/";
+    String BASE_API = "https://api.covid19api.com/";
     @Headers("Content-Type: application/json")
-    @GET("timeseries.json")
+    @GET("summary")
     Call<Feed> getData();
 
 }
