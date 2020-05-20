@@ -44,7 +44,7 @@ public class Universal extends Fragment {
     private static final String TAG = "Main";
     private static final String BASE_URL= "https://api.covid19api.com/";
     String mCountry, mNewConfirmed, mTotalConfirmed, mTotalRecovered;
-    String[] mCovidHeader = {"Country", "New Confirmed", "Total Confirmed", "Total Recovered"};
+    String[] mCovidHeader = {"Country", "New Cases", "Total Cases", "Recovered"};
     String[][] mCovidTableValues;
     ArrayList<CovidData> mCovidDataArrayList;
     TableView<String[]> tableView;
@@ -99,7 +99,7 @@ public class Universal extends Fragment {
 //        tableColumnWeightModel.setColumnWeight(1,1);
 //        tableColumnWeightModel.setColumnWeight(2,1);
 //        tableColumnWeightModel.setColumnWeight(3,1);
-        tableView.setHeaderBackgroundColor(Color.parseColor("#2ecc71"));
+        tableView.setHeaderBackgroundColor(Color.parseColor("#9d65c9"));
         return view;
     }
 

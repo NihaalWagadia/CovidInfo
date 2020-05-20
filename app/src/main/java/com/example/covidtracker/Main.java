@@ -33,8 +33,8 @@ public class Main extends AppCompatActivity implements Universal.OnFragmentInter
         Objects.requireNonNull(getSupportActionBar()).setTitle("COVID DATA");
 
         final TabLayout tabLayout = findViewById(R.id.tablayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Uni"));
-        tabLayout.addTab(tabLayout.newTab().setText("Country"));
+        tabLayout.addTab(tabLayout.newTab().setText("Univeral"));
+        tabLayout.addTab(tabLayout.newTab().setText("Search"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = findViewById(R.id.ViewPager);
