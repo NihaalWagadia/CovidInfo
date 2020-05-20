@@ -99,7 +99,6 @@ public class Universal extends Fragment {
 //        tableColumnWeightModel.setColumnWeight(1,1);
 //        tableColumnWeightModel.setColumnWeight(2,1);
 //        tableColumnWeightModel.setColumnWeight(3,1);
-
         tableView.setHeaderBackgroundColor(Color.parseColor("#2ecc71"));
         return view;
     }

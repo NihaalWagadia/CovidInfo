@@ -4,10 +4,31 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.LinearLayout;
+
+import com.example.covidtracker.model.Feed;
+import com.example.covidtracker.model.countrylist.Countries;
+import com.example.covidtracker.networkcall.PombApi;
+
+import java.util.ArrayList;
+
+import de.codecrafters.tableview.TableView;
+import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter;
+import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import sidekick.CovidData;
 
 
 /**
@@ -21,6 +42,18 @@ public class SearchBar extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private OnFragmentInteractionListener onFragmentInteractionListener;
+
+    private static final String TAG = "Main";
+    private static final String BASE_URL= "https://api.covid19api.com/";
+    String mCountry, mNewConfirmed, mTotalConfirmed, mTotalRecovered;
+    //String[] mCovidHeader = {"Country", "New Confirmed", "Total Confirmed", "Total Recovered"};
+    //String[][] mCovidTableValues;
+   // ArrayList<CovidData> mCovidDataArrayList;
+    //TableView<String[]> tableView;
+    View view;
+    SearchAdapter adapter;
+    LinearLayoutManager linearLayoutManager;
+    RecyclerView recyclerView;
 
 
     // TODO: Rename and change types of parameters
@@ -56,13 +89,77 @@ public class SearchBar extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        populateData();
     }
+
+        private void populateData() {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            PombApi pombApi = retrofit.create(PombApi.class);
+            Call<Feed> call = pombApi.getData();
+            call.enqueue(new Callback<Feed>() {
+                @Override
+                public void onResponse(Call<Feed> call, Response<Feed> response) {
+                    final ArrayList<CovidData >mCovidDataArrayList = new ArrayList<>();
+                    Log.d(TAG, "mResponse Server responses" + response.toString());
+                    Log.d(TAG, "mResponse well" + response.body().toString());
+                    ArrayList<Countries> countriesArrayList = response.body().getCountries();
+                    Log.d("wait", String.valueOf(countriesArrayList.size()));
+
+                    //mCovidTableValues = new String[countriesArrayList.size()][4];
+
+                    for(int i=0; i<countriesArrayList.size(); i++){
+                        Log.d(TAG,"onResponse: \n"+
+                                "Country"+  countriesArrayList.get(i).getCountry() + "\n" +
+                                "NewConfirmed"+ countriesArrayList.get(i).getNewConfirmed() + "\n"+
+                                "TotalConfirmed"+ countriesArrayList.get(i).getTotalConfirmed() + "\n"+
+                                "TotalRecovered"+ countriesArrayList.get(i).getTotalRecovered() + "\n");
+                        mCountry = countriesArrayList.get(i).getCountry();
+                        mNewConfirmed= countriesArrayList.get(i).getNewConfirmed();
+                        mTotalConfirmed= countriesArrayList.get(i).getTotalConfirmed();
+                        mTotalRecovered= countriesArrayList.get(i).getTotalRecovered();
+
+
+//                        mCovidTableValues[i][0]= countriesArrayList.get(i).getCountry();
+//                        mCovidTableValues[i][1]= countriesArrayList.get(i).getNewConfirmed();
+//                        mCovidTableValues[i][2]= countriesArrayList.get(i).getTotalConfirmed();
+//                        mCovidTableValues[i][3]= countriesArrayList.get(i).getTotalRecovered();
+//                        tableView.setHeaderAdapter(new SimpleTableHeaderAdapter(getContext(), mCovidHeader));
+//                        tableView.setDataAdapter(new SimpleTableDataAdapter(getContext(), mCovidTableValues));
+                        CovidData covidData = new CovidData(mCountry, mNewConfirmed, mTotalConfirmed, mTotalRecovered);
+                        mCovidDataArrayList.add(covidData);
+                    }
+                    adapter.addItems(mCovidDataArrayList);
+
+                }
+
+                @Override
+                public void onFailure(Call<Feed> call, Throwable t) {
+                    Log.d(TAG, "Abort Mission Abort" + t.getMessage());
+                }
+            });
+
+        }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search_bar, container, false);
+        view = inflater.inflate(R.layout.fragment_search_bar, container, false);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new SearchAdapter(getContext(), new ArrayList<CovidData>());
+        recyclerView.setAdapter(adapter);
+
+
+        return view;
     }
 
     public interface OnFragmentInteractionListener {
