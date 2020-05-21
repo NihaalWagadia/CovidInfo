@@ -4,23 +4,29 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import sidekick.CovidData;
 
-public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> {
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> implements Filterable {
 
     private Context mContext;
     private List<CovidData> mCovidDataList;
+    private List<CovidData> mCovidDataListCopy;
 
     public SearchAdapter(Context mContext, List<CovidData> mCovidDataList) {
         this.mContext = mContext;
         this.mCovidDataList = mCovidDataList;
+        //making a copy of list to use independently
+        mCovidDataListCopy = new ArrayList<>(mCovidDataList);
     }
 
     @NonNull
@@ -52,6 +58,40 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         mCovidDataList.addAll(covidData);
         notifyDataSetChanged();
     }
+
+    @Override
+    public Filter getFilter() {
+        return filtered;
+    }
+
+    private Filter filtered = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            List<CovidData> covidDataList = new ArrayList<>();
+            if(charSequence == null || charSequence.length()==0){
+                covidDataList.addAll(mCovidDataListCopy);
+            }
+            else {
+                String pattern = charSequence.toString().toLowerCase().trim();
+                for(CovidData covidData : mCovidDataListCopy){
+                    if(covidData.getCountry().toLowerCase().contains(pattern)){
+                        covidDataList.add(covidData);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = covidDataList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            mCovidDataList.clear();
+            mCovidDataList.addAll((List)filterResults.values);
+            notifyDataSetChanged();
+
+        }
+    };
 
     public class SearchViewHolder extends  RecyclerView.ViewHolder{
 

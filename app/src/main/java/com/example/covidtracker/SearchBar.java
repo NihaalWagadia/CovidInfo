@@ -3,16 +3,20 @@ package com.example.covidtracker;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.LinearLayout;
+
 
 import com.example.covidtracker.model.Feed;
 import com.example.covidtracker.model.countrylist.Countries;
@@ -20,9 +24,6 @@ import com.example.covidtracker.networkcall.PombApi;
 
 import java.util.ArrayList;
 
-import de.codecrafters.tableview.TableView;
-import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter;
-import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -89,7 +90,7 @@ public class SearchBar extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        setHasOptionsMenu(true);
         populateData();
     }
 
@@ -157,8 +158,6 @@ public class SearchBar extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new SearchAdapter(getContext(), new ArrayList<CovidData>());
         recyclerView.setAdapter(adapter);
-
-
         return view;
     }
 
@@ -166,4 +165,29 @@ public class SearchBar extends Fragment {
         void onFragmentInteraction(Uri uri);
 
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+        inflater.inflate(R.menu.filter_data, menu);
+        Log.d("REACH","REACH");
+        super.onCreateOptionsMenu(menu,inflater);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView)menuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adapter.getFilter().filter(s);
+                return false;
+            }
+        });
+
+
+    }
+
 }
