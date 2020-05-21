@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#9d65c9"
-    tools:context=".SearchBar">
+    tools:context=".tabscollection.SearchBar">
 
 
     <!-- TODO: Update blank fragment layout -->
