@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#9d65c9"
     tools:context=".SearchBar">
 
 
@@ -16,18 +17,35 @@
 <!--        android:id="@+id/recycler_view">-->
 <!--    </androidx.recyclerview.widget.RecyclerView>-->
 
+
+        <ImageView
+
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_search_black_24dp"
+            android:paddingLeft="8dp"
+            android:id="@+id/image">
+        </ImageView>
+
+
+
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:id="@+id/search_bar">
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:background="#9d65c9"
+        android:paddingLeft="16dp"
+        android:id="@+id/search_bar"
+        android:layout_toRightOf="@+id/image"
+        android:layout_toEndOf="@+id/image"
+        android:hint="Search">
     </EditText>
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:background="#9d65c9"
+            android:layout_below="@+id/search_bar"
             android:id="@+id/recycler_view">
         </androidx.recyclerview.widget.RecyclerView>
 
-</LinearLayout>
+</RelativeLayout>

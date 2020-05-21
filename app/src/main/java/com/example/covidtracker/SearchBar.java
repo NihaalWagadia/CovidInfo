@@ -229,7 +229,7 @@ public class SearchBar extends Fragment {
 //
 //            @Override
 //            public boolean onQueryTextChange(String s) {
-//                adapter.getFilter().filter(s);
+//                adapter.filterList(s);
 //                return false;
 //            }
 //        });
