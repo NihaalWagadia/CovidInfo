@@ -1,6 +1,7 @@
 package com.example.covidtracker;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import sidekick.CovidData;
 
-public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> implements Filterable {
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder>  {
 
     private Context mContext;
     private List<CovidData> mCovidDataList;
@@ -26,7 +27,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         this.mContext = mContext;
         this.mCovidDataList = mCovidDataList;
         //making a copy of list to use independently
-        mCovidDataListCopy = new ArrayList<>(mCovidDataList);
+      //  mCovidDataListCopy = new ArrayList<>(mCovidDataList);
+
     }
 
     @NonNull
@@ -59,39 +61,45 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         notifyDataSetChanged();
     }
 
-    @Override
-    public Filter getFilter() {
-        return filtered;
+    public void  filterList(ArrayList<CovidData> filteredList){
+        mCovidDataList = filteredList;
+        notifyDataSetChanged();
     }
 
-    private Filter filtered = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence charSequence) {
-            List<CovidData> covidDataList = new ArrayList<>();
-            if(charSequence == null || charSequence.length()==0){
-                covidDataList.addAll(mCovidDataListCopy);
-            }
-            else {
-                String pattern = charSequence.toString().toLowerCase().trim();
-                for(CovidData covidData : mCovidDataListCopy){
-                    if(covidData.getCountry().toLowerCase().contains(pattern)){
-                        covidDataList.add(covidData);
-                    }
-                }
-            }
-            FilterResults results = new FilterResults();
-            results.values = covidDataList;
-            return results;
-        }
+//    @Override
+//    public Filter getFilter() {
+//        return filtered;
+//    }
 
-        @Override
-        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            mCovidDataList.clear();
-            mCovidDataList.addAll((List)filterResults.values);
-            notifyDataSetChanged();
-
-        }
-    };
+//    private Filter filtered = new Filter() {
+//        @Override
+//        protected FilterResults performFiltering(CharSequence charSequence) {
+//            List<CovidData> m_covidDataList = new ArrayList<>();
+//            if(charSequence == null || charSequence.length()==0){
+//                m_covidDataList.addAll(mCovidDataListCopy);
+//            }
+//            else {
+//                String pattern = charSequence.toString().toLowerCase().trim();
+//                Log.d("SIZEOFCOPY", String.valueOf(mCovidDataListCopy.size()));
+//                for(CovidData covidData : mCovidDataListCopy){
+//                    if(covidData.getCountry().toLowerCase().contains(pattern)){
+//                        m_covidDataList.add(covidData);
+//                    }
+//                }
+//            }
+//            FilterResults results = new FilterResults();
+//            results.values = m_covidDataList;
+//            return results;
+//        }
+//
+//        @Override
+//        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+//            mCovidDataList.clear();
+//            mCovidDataList.addAll((List)filterResults.values);
+//            notifyDataSetChanged();
+//
+//        }
+//    };
 
     public class SearchViewHolder extends  RecyclerView.ViewHolder{
 

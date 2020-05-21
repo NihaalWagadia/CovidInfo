@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 
 import com.example.covidtracker.model.Feed;
@@ -55,6 +58,9 @@ public class SearchBar extends Fragment {
     SearchAdapter adapter;
     LinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
+    EditText searchView;
+    ArrayList<CovidData >mCovidDataArrayList = new ArrayList<>();
+
 
 
     // TODO: Rename and change types of parameters
@@ -104,7 +110,6 @@ public class SearchBar extends Fragment {
             call.enqueue(new Callback<Feed>() {
                 @Override
                 public void onResponse(Call<Feed> call, Response<Feed> response) {
-                    final ArrayList<CovidData >mCovidDataArrayList = new ArrayList<>();
                     Log.d(TAG, "mResponse Server responses" + response.toString());
                     Log.d(TAG, "mResponse well" + response.body().toString());
                     ArrayList<Countries> countriesArrayList = response.body().getCountries();
@@ -153,41 +158,83 @@ public class SearchBar extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_search_bar, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
+        searchView = view.findViewById(R.id.search_bar);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new SearchAdapter(getContext(), new ArrayList<CovidData>());
         recyclerView.setAdapter(adapter);
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//
+//                adapter.
+//                return false;
+//            }
+//        });
+        searchView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+
+            }
+        });
         return view;
     }
+
+    private void filter(String toString) {
+        ArrayList<CovidData> covidDatapass = new ArrayList<>();
+        for(CovidData item : mCovidDataArrayList){
+            if(item.getCountry().toLowerCase().contains(toString.toLowerCase())){
+                covidDatapass.add(item);
+            }
+        }
+        adapter.filterList(covidDatapass);
+    }
+
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
 
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-
-        inflater.inflate(R.menu.filter_data, menu);
-        Log.d("REACH","REACH");
-        super.onCreateOptionsMenu(menu,inflater);
-        MenuItem menuItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView)menuItem.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                adapter.getFilter().filter(s);
-                return false;
-            }
-        });
-
-
-    }
+//    @Override
+//    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+//
+//        inflater.inflate(R.menu.filter_data, menu);
+//        Log.d("REACH","REACH");
+//        super.onCreateOptionsMenu(menu,inflater);
+//        MenuItem menuItem = menu.findItem(R.id.action_search);
+//        SearchView searchView = (SearchView)menuItem.getActionView();
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String s) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                adapter.getFilter().filter(s);
+//                return false;
+//            }
+//        });
+//
+//
+//    }
 
 }
